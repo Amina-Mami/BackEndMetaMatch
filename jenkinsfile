@@ -26,19 +26,18 @@ pipeline {
         
         // Uploading Docker images into Nexus Registry
         stage('Deploy to Nexus') {
-    steps { 
-        script {
-            // Tag the Docker image with the desired tag (latest)
-            sh("docker tag nodemongoapp:latest ${registry}/nodemongoapp:latest")
-            
-            // Push the Docker image to the Nexus registry with the latest tag
-            docker.withRegistry("http://${registry}", registryCredentials) {
-                sh("docker push ${registry}/nodemongoapp:latest")
+            steps { 
+                script {
+                    // Tag the Docker image with the desired tag (latest)
+                    sh("docker tag nodemongoapp:${imageTag} ${registry}/nodemongoapp:${imageTag}")
+                    
+                    // Push the Docker image to the Nexus registry with the latest tag
+                    docker.withRegistry("http://${registry}", registryCredentials) {
+                        sh("docker push ${registry}/nodemongoapp:${imageTag}")
+                    }
+                }
             }
         }
-    }
-}
-
         
         stage('Run application') {
             steps { 
