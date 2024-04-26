@@ -89,10 +89,21 @@ wss.on("connection", (ws) => {
   });
 });
 
+// mongoose
+//   .connect(process.env.MONGO_URI)
+//   .then(() => console.log("DB Connected"))
+//   .catch((err) => console.log(err));
+
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(
+    `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/metamatch`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("DB Connected"))
-  .catch((err) => console.log(err));
+  .catch((err) => console.error("DB Connection Error:", err));
 
 app.use(cors());
 app.use(bodyParser.json());
