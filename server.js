@@ -89,19 +89,10 @@ wss.on("connection", (ws) => {
   });
 });
 
-// mongoose
-//   .connect(process.env.MONGO_URI)
-//   .then(() => console.log("DB Connected"))
-//   .catch((err) => console.log(err));
-
 mongoose
-  .connect(process.env.MONGO_URI, {
-    // Remove deprecated options
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("DB Connected"))
-  .catch((err) => console.error("DB Connection Error:", err));
+  .catch((err) => console.log(err));
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -163,6 +154,10 @@ app.use("/test", (req, res) => {
     });
   }
   return res.status(200).json({ status: true, password });
+});
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Metamatch API!");
 });
 
 const PORT = process.env.PORT || 3000;
