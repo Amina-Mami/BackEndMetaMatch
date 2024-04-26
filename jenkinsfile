@@ -4,7 +4,7 @@ pipeline {
     environment {
         registryCredentials = "nexus"
         registry = "172.16.2.239:8083"
-        imageTag = "latest" // Define the tag to be used for the Docker image
+       imageTag = "6.0"
     }
 
     stages {
