@@ -157,7 +157,7 @@ app.use("/test", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Metamatch API!");
+  res.render("login"); // Assuming you have a login.ejs file in your views directory
 });
 
 const PORT = process.env.PORT || 3000;
