@@ -4,6 +4,7 @@ pipeline {
     environment {
         registryCredentials = "nexus"
         registry = "172.16.2.239:8083"
+        imageTag = "latest" // Define the tag to be used for the Docker image
     }
 
     stages {
@@ -14,13 +15,6 @@ pipeline {
                 }
             }
         }
-        // stage('Unit Test') {
-        //     steps {
-        //         script {
-        //             sh('npx jest')
-        //         }
-        //     }
-        // }
         
         stage('Building images (node and mongo)') {
             steps {
@@ -29,26 +23,35 @@ pipeline {
                 }
             }
         }
+        
         // Uploading Docker images into Nexus Registry
         stage('Deploy to Nexus') {
-            steps { 
-                script {
-                    docker.withRegistry("http://${registry}", registryCredentials) {
-                        sh('docker push ${registry}/nodemongoapp:latest')
-                    }
-                }
+    steps { 
+        script {
+            // Tag the Docker image with the desired tag (latest)
+            sh("docker tag nodemongoapp:latest ${registry}/nodemongoapp:latest")
+            
+            // Push the Docker image to the Nexus registry with the latest tag
+            docker.withRegistry("http://${registry}", registryCredentials) {
+                sh("docker push ${registry}/nodemongoapp:latest")
             }
         }
+    }
+}
+
+        
         stage('Run application') {
             steps { 
                 script {
+                    // Pull and run the Docker image from the Nexus registry
                     docker.withRegistry("http://${registry}", registryCredentials) {
-                        sh('docker pull ${registry}/nodemongoapp:latest')
+                        sh("docker pull ${registry}/nodemongoapp:${imageTag}")
                         sh('docker-compose up -d')
                     }
                 }
             }
         }
+        
         stage("Run Prometheus") {
             steps {
                 script {
@@ -56,6 +59,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Run Grafana") { 
             steps {
                 script {
@@ -65,3 +69,75 @@ pipeline {
         }
     }
 }
+
+
+
+
+
+// pipeline {
+//     agent any
+    
+//     environment {
+//         registryCredentials = "nexus"
+//         registry = "172.16.2.239:8083"
+//     }
+
+//     stages {
+//         stage('Install dependencies') {
+//             steps {
+//                 script {
+//                     sh('npm install')
+//                 }
+//             }
+//         }
+//         // stage('Unit Test') {
+//         //     steps {
+//         //         script {
+//         //             sh('npx jest')
+//         //         }
+//         //     }
+//         // }
+        
+//         stage('Building images (node and mongo)') {
+//             steps {
+//                 script {
+//                     sh('docker-compose build')
+//                 }
+//             }
+//         }
+//         // Uploading Docker images into Nexus Registry
+//         stage('Deploy to Nexus') {
+//             steps { 
+//                 script {
+//                     docker.withRegistry("http://${registry}", registryCredentials) {
+//                         sh('docker push ${registry}/nodemongoapp:latest')
+//                     }
+//                 }
+//             }
+//         }
+//         stage('Run application') {
+//             steps { 
+//                 script {
+//                     docker.withRegistry("http://${registry}", registryCredentials) {
+//                         sh('docker pull ${registry}/nodemongoapp:latest')
+//                         sh('docker-compose up -d')
+//                     }
+//                 }
+//             }
+//         }
+//         stage("Run Prometheus") {
+//             steps {
+//                 script {
+//                     sh('docker start prometheus')
+//                 }
+//             }
+//         }
+//         stage("Run Grafana") { 
+//             steps {
+//                 script {
+//                     sh('docker start grafana')
+//                 }
+//             }
+//         }
+//     }
+// }
