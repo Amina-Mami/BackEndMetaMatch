@@ -95,13 +95,11 @@ wss.on("connection", (ws) => {
 //   .catch((err) => console.log(err));
 
 mongoose
-  .connect(
-    `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/metamatch`,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.MONGO_URI, {
+    // Remove deprecated options
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("DB Connected"))
   .catch((err) => console.error("DB Connection Error:", err));
 
