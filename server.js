@@ -89,8 +89,17 @@ wss.on("connection", (ws) => {
   });
 });
 
+// mongoose
+//   .connect(process.env.MONGO_URI)
+//   .then(() => console.log("DB Connected"))
+//   .catch((err) => console.log(err));
+
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect("mongodb://root:example@db:27017/metamatch", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    authSource: "admin", // Specify the authentication database
+  })
   .then(() => console.log("DB Connected"))
   .catch((err) => console.log(err));
 
