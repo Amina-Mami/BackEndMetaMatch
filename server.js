@@ -156,10 +156,6 @@ app.use("/test", (req, res) => {
   return res.status(200).json({ status: true, password });
 });
 
-app.get("/", (req, res) => {
-  res.render("login"); // Assuming you have a login.ejs file in your views directory
-});
-
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
